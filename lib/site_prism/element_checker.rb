@@ -20,11 +20,15 @@ module SitePrism
     # Default: 'none' => Perform no recursion when calling #all_there?
     # Override: 'one' => Perform one recursive dive into all section
     # items and call #all_there? on those items too.
-    def all_there?(recursion: 'none')
+    def all_there?(recursion: 'none', elements: nil)
       SitePrism.logger.info('Setting for recursion is being ignored for now.')
 
+      elements ||= elements_to_check
+      SitePrism.logger.error("You called all_there? with no elements") if elements.count == 0
+      SitePrism.logger.error(elements)
+
       if %w[none one].include?(recursion)
-        elements_to_check.all? { |item_name| there?(item_name) }
+        elements.all? { |item_name| there?(item_name) }
       else
         SitePrism.logger.error('Invalid recursion setting, Will not run.')
       end
